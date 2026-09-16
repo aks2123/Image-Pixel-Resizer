@@ -251,7 +251,7 @@ if len(uploaded_files) == 1:
 
     with col2:
         st.subheader("Resized & Adjusted Image")
-        st.image(resized_img, use_column_width=True)
+        st.image(resized_img)
         diff_label = f"({size_diff_pct:+.1f}%)" if size_diff_pct != 0 else ""
         st.markdown(
             f"""
