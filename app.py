@@ -81,7 +81,7 @@ def get_image_dpi(image: Image.Image) -> tuple[int, int]:
             return int(round(dpi_info[0])), int(round(dpi_info[1]))
         except Exception:
             pass
-    return (72, 72)  # Default standard fallback
+    return (72, 72)
 
 
 def calculate_physical_size(width_px: int, height_px: int, dpi: int) -> str:
@@ -105,7 +105,6 @@ def prepare_download_buffer(image: Image.Image, output_format: str, quality: int
     buf = io.BytesIO()
     save_format = output_format.upper()
 
-    # Handle transparency when converting RGBA/P images to JPEG
     if save_format in ["JPEG", "JPG"] and image.mode in ("RGBA", "LA", "P"):
         background = Image.new("RGB", image.size, (255, 255, 255))
         if image.mode == "P":
@@ -121,7 +120,6 @@ def prepare_download_buffer(image: Image.Image, output_format: str, quality: int
     if save_format == "PNG":
         save_kwargs["optimize"] = True
 
-    # Embed DPI metadata
     if dpi > 0:
         save_kwargs["dpi"] = (dpi, dpi)
 
@@ -135,11 +133,10 @@ def prepare_download_buffer(image: Image.Image, output_format: str, quality: int
 # -----------------------------------------------------------------------------
 st.markdown('<div class="main-header">🖼️ Image Pixel & DPI Resizer</div>', unsafe_allow_html=True)
 st.markdown(
-    '<div class="sub-header">Upload images to customize pixel dimensions, adjust print DPI, preview the changes, and download.</div>',
+    '<div class="sub-header">Upload images to customize pixel dimensions, adjust print DPI, preview changes, and download.</div>',
     unsafe_allow_html=True,
 )
 
-# Sidebar: Controls
 with st.sidebar:
     st.header("⚙️ Resize Controls")
 
@@ -168,7 +165,6 @@ with st.sidebar:
     resample_name = st.selectbox("Resampling Filter", list(RESAMPLE_FILTERS.keys()), index=0)
     chosen_filter = RESAMPLE_FILTERS[resample_name]
 
-# Upload Area
 uploaded_files = st.file_uploader(
     "Choose an image or multiple images...",
     type=["png", "jpg", "jpeg", "webp", "bmp", "tiff"],
@@ -236,13 +232,13 @@ if len(uploaded_files) == 1:
     orig_print_size = calculate_physical_size(orig_w, orig_h, orig_dpi_x)
     new_print_size = calculate_physical_size(target_w, target_h, target_dpi)
 
-    # Preview & Comparisons
+    # Preview & Comparisons (using use_column_width=True for stlite compatibility)
     st.markdown("### 🔍 Image Preview & Details")
     col1, col2 = st.columns(2)
 
     with col1:
         st.subheader("Original Image")
-        st.image(image, use_container_width=True)
+        st.image(image, use_column_width=True)
         st.markdown(
             f"""
             - **Dimensions:** `{orig_w} × {orig_h} px`
@@ -255,7 +251,7 @@ if len(uploaded_files) == 1:
 
     with col2:
         st.subheader("Resized & Adjusted Image")
-        st.image(resized_img, use_container_width=True)
+        st.image(resized_img, use_column_width=True)
         diff_label = f"({size_diff_pct:+.1f}%)" if size_diff_pct != 0 else ""
         st.markdown(
             f"""
