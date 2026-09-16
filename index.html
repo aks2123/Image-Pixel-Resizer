@@ -20,7 +20,8 @@
           entrypoint: "app.py",
           files: {
             "app.py": {
-              url: "./app.py"
+              // Appending Date.now() stops browsers from caching the old app.py
+              url: "./app.py?v=" + new Date().getTime()
             }
           },
         },
