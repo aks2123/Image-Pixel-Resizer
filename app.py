@@ -238,7 +238,7 @@ if len(uploaded_files) == 1:
 
     with col1:
         st.subheader("Original Image")
-        st.image(image, use_column_width=True)
+        st.image(image)
         st.markdown(
             f"""
             - **Dimensions:** `{orig_w} × {orig_h} px`
